@@ -1,21 +1,38 @@
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
 import { View, Text, StyleSheet, Button } from 'react-native';
-import { setConfigurationAsync } from 'expo/build/AR';
+
+const COUNTER_INCREMENT = 1;
+const ACTION_INCREASE = 'increase';
+const ACTION_DECREASE = 'decrease';
+
+const reducer = (state, action) => {
+    // state === { count: number }
+    // action === { type: ACTION_INCREASE || ACTION_DECREASE, payload: COUNTER_INCREMENT }
+
+    switch (action.type) {
+        case ACTION_INCREASE:
+            return {...state, counter: state.counter + action.payload}
+        case ACTION_DECREASE:
+            return {...state, counter: state.counter - action.payload}
+        default:
+            return state;
+    }
+}
 
 const CounterScreen = () =>{
-    const [counter, setCounter] = useState(0);
+    const [state, dispatch] = useReducer(reducer, { counter: 0 });
     
     return (
         <View>
             <Button title="Increase" onPress={() => {
                 //Don`t do this!
                 //counter++;
-                setCounter(counter + 1);
+                dispatch({ type: ACTION_INCREASE, payload: COUNTER_INCREMENT});
             }}/>
             <Button title="Decrease" onPress={() => {
-                setCounter(counter - 1);
+                dispatch({ type: ACTION_DECREASE, payload: COUNTER_INCREMENT});
             }}/>
-            <Text>Current Count: {counter}</Text>
+            <Text>Current Count: {state.counter}</Text>
         </View>
     );
 }
